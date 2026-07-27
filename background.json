@@ -1,0 +1,17 @@
+// background.js — обработчик запросов от popup-страницы
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'getAllCookies') {
+    chrome.cookies.getAll({}, (cookies) => {
+      if (chrome.runtime.lastError) {
+        sendResponse({ error: chrome.runtime.lastError.message });
+      } else {
+        sendResponse({ cookies: cookies });
+      }
+    });
+    return true; // асинхронный ответ
+  }
+  return false;
+});
+
+// Логируем запуск (для отладки)
+console.log('JELL-X Background service worker активен');

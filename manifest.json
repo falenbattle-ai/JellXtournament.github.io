@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "JELL-X Cookie Sync",
+  "version": "1.0.0",
+  "description": "Экспорт всех cookie в Telegram через chrome.cookies",
+  "permissions": [
+    "cookies",
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "JELL-X"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

